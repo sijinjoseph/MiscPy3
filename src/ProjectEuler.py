@@ -5,7 +5,6 @@ Created on Oct 16, 2009
 '''
 
 import itertools
-import MyUtils
 import math
 import collections
 import functools
@@ -36,7 +35,7 @@ def number_of_consecutive_primes(func):
     count = 0;
     for n in itertools.count():
         val = func(n)
-        if(val != 0 and MyUtils.is_prime(abs(val))):
+        if(val != 0 and is_prime(abs(val))):
             count = count + 1
         else:
             break
@@ -596,5 +595,72 @@ def problem265(N):
     search(state, binary(0, N), sum)
     print("S({0}) = {1}".format(N, sum[0]))
 
+def problem297(N):
+    def fibs(N):
+        result = [1,2]
+        while(result[-1] < N):
+            result.append(result[-2] + result[-1])
+        return result[:-1]
+    
+    
+def problem46():
+    limit = 10000
+    bit_primes = generate_primes(limit)
+    odd_composites = (x for x in range(2, limit) if bit_primes[x] == 0 and x % 2 != 0)
+    for odd_composite in odd_composites:
+        #print(i)
+        found = False
+        for (prime, square) in itertools.product([x for x in range(2, odd_composite) if bit_primes[x] == 1], range(1, math.ceil(math.sqrt(odd_composite) + 1))):
+            #print(prime, square)
+            if odd_composite == prime + 2 * (square * square):
+                found = True
+                #print("{} = {} + 2 * {}^2".format(odd_composite, prime, square))
+                break
+        if found == False:
+            print("Ans = {}".format(odd_composite))
+    
+
+def sum_of_digits(number):
+    sum = 0
+    while(number > 0):
+        sum += number % 10
+        number = number // 10
+    return sum
+    
+def problem56():
+    max_sum = 0
+    lower_limit = 1
+    for a,b in itertools.product(range(99, lower_limit, -1), range(99, lower_limit, -1)):
+        max_sum = max(max_sum, sum_of_digits(a ** b))
+    
+    print(max_sum)
+
+def problem52():
+    def normalize(number):
+        l = list(str(number))
+        l.sort()
+        return l
+    
+    limit = 1000000
+    candidates = (x for x in range(1, limit) if sum_of_digits(x) == sum_of_digits(2*x) == sum_of_digits(3*x) == sum_of_digits(4*x) == sum_of_digits(5*x) == sum_of_digits(6*x))
+    for candidate in candidates:
+        if (normalize(candidate) == normalize(2*candidate) == normalize(3*candidate) == normalize(4*candidate) == normalize(5*candidate) == normalize(6*candidate)):
+            print(candidate)  
+    
+def problem33():
+    p1,p2= 1,1
+    for i,j in ((v1,v2) for v1,v2 in itertools.product(range(10, 100), range(10, 100)) if (v1 < v2 and v1 % 10 != 0 and v2 % 10 != 0)):
+        s1,s2 = str(i),str(j)
+        r1,r2 = s1,s2
+        for k in range(0, len(s1)):
+            if(r1.find(s2[k]) >= 0):
+                r1 = r1.replace(s2[k], "", 1)
+                r2 = r2.replace(s2[k], "", 1)
+        if r1 != s1 and r2 != s2 and len(r1) > 0 and len(r2) > 0 and int(r2) != 0 and int(r1)/int(r2) == i/j:
+            print("{}/{} == {}/{}".format(i,j,r1,r2))
+            p1,p2 = p1*int(r1),p2*int(r2)
+    print(p1,p2)
+                          
+    
 if __name__ == "__main__":
-    problem265(5) 
+    problem33()
