@@ -31,6 +31,31 @@ def get_best_predictor(tallies, current_run_number):
     #print("best = {}".format(best_predictor))
     return best_predictor, best_tally
 
+class NGram:
+    N = 1
+    history = ""
+    frequency = defaultdict(int)
+    
+    def __init__(self, N = 1):
+        self.N = N
+        
+    def __str__(self):
+        return "{}Gram".format(self.N)
+    
+    def add_history(self, move):
+        self.history += move
+        
+        if len(self.history) > self.lookback:
+            key = self.history[(self.lookback) * -1:]
+            self.frequency[key] += 1
+            
+    def predict(self):
+        if self.lookback == 0:
+            return (random_move(), 0.5)
+        
+        key = self.history[(self.lookback) * -1:]
+        
+        
 class PredictN:
     lookback = 1
     history = ""
